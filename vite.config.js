@@ -11,14 +11,14 @@ export default defineConfig(({ mode }) => {
     
     // Define environment variables that will be exposed to the app
     define: {
-      'import.meta.env.VITE_POWERBI_CLIENT_ID': JSON.stringify(env.POWERBI_CLIENT_ID || ''),
-      'import.meta.env.VITE_POWERBI_TENANT_ID': JSON.stringify(env.POWERBI_TENANT_ID || ''),
-      'import.meta.env.VITE_POWERBI_WORKSPACE_ID': JSON.stringify(env.POWERBI_WORKSPACE_ID || ''),
-      'import.meta.env.VITE_POWERBI_REPORT_ID': JSON.stringify(env.POWERBI_REPORT_ID || ''),
-      'import.meta.env.VITE_POWERBI_REPORT_NAME': JSON.stringify(env.POWERBI_REPORT_NAME || 'Power BI Report'),
-      'import.meta.env.VITE_LOOKER_EMBED_URL': JSON.stringify(env.LOOKER_EMBED_URL || ''),
-      'import.meta.env.VITE_LOOKER_DASHBOARD_ID': JSON.stringify(env.LOOKER_DASHBOARD_ID || ''),
-      'import.meta.env.VITE_LOOKER_AUTH_METHOD': JSON.stringify(env.LOOKER_AUTH_METHOD || 'public'),
+      'import.meta.env.VITE_POWERBI_CLIENT_ID': JSON.stringify(env.VITE_POWERBI_CLIENT_ID || env.POWERBI_CLIENT_ID || ''),
+      'import.meta.env.VITE_POWERBI_TENANT_ID': JSON.stringify(env.VITE_POWERBI_TENANT_ID || env.POWERBI_TENANT_ID || ''),
+      'import.meta.env.VITE_POWERBI_WORKSPACE_ID': JSON.stringify(env.VITE_POWERBI_WORKSPACE_ID || env.POWERBI_WORKSPACE_ID || ''),
+      'import.meta.env.VITE_POWERBI_REPORT_ID': JSON.stringify(env.VITE_POWERBI_REPORT_ID || env.POWERBI_REPORT_ID || ''),
+      'import.meta.env.VITE_POWERBI_REPORT_NAME': JSON.stringify(env.VITE_POWERBI_REPORT_NAME || env.POWERBI_REPORT_NAME || 'Power BI Report'),
+      'import.meta.env.VITE_LOOKER_EMBED_URL': JSON.stringify(env.VITE_LOOKER_EMBED_URL || env.LOOKER_EMBED_URL || ''),
+      'import.meta.env.VITE_LOOKER_DASHBOARD_ID': JSON.stringify(env.VITE_LOOKER_DASHBOARD_ID || env.LOOKER_DASHBOARD_ID || ''),
+      'import.meta.env.VITE_LOOKER_AUTH_METHOD': JSON.stringify(env.VITE_LOOKER_AUTH_METHOD || env.LOOKER_AUTH_METHOD || 'public'),
     },
     
     // Build output directory
