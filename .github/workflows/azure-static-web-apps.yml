@@ -66,9 +66,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "upload"
           ###### Repository/Build Configurations ######
-          app_location: "/" # Project root
+          app_location: "dist" # Vite output directory
           api_location: "" # No backend API
-          output_location: "dist" # Vite builds to dist/
+          output_location: "" # Already in app_location
           skip_app_build: true # We already built with npm run build
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
