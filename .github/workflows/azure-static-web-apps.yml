@@ -1,0 +1,86 @@
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    permissions:
+       id-token: write
+       contents: read
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+      
+      # Set up Node.js for React/Vite build
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+      
+      # Build React app with Vite
+      - name: Build React app
+        run: npm run build
+        env:
+          VITE_POWERBI_CLIENT_ID: ${{ secrets.POWERBI_CLIENT_ID }}
+          VITE_POWERBI_TENANT_ID: ${{ secrets.POWERBI_TENANT_ID }}
+          VITE_POWERBI_WORKSPACE_ID: ${{ secrets.POWERBI_WORKSPACE_ID }}
+          VITE_POWERBI_REPORT_ID: ${{ secrets.POWERBI_REPORT_ID }}
+          VITE_POWERBI_REPORT_NAME: ${{ secrets.POWERBI_REPORT_NAME }}
+          VITE_LOOKER_EMBED_URL: ${{ secrets.LOOKER_EMBED_URL }}
+          VITE_LOOKER_DASHBOARD_ID: ${{ secrets.LOOKER_DASHBOARD_ID }}
+          VITE_LOOKER_AUTH_METHOD: ${{ secrets.LOOKER_AUTH_METHOD }}
+      
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
+      
+      - name: Get Id Token
+        uses: actions/github-script@v6
+        id: idtoken
+        with:
+           script: |
+               const coredemo = require('@actions/core')
+               return await coredemo.getIDToken()
+           result-encoding: string
+      
+      - name: Deploy to Azure Static Web Apps
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_HILL_0B1C45200 }}
+          action: "upload"
+          ###### Repository/Build Configurations ######
+          app_location: "/" # Project root
+          api_location: "" # No backend API
+          output_location: "dist" # Vite builds to dist/
+          skip_app_build: true # We already built with npm run build
+          github_id_token: ${{ steps.idtoken.outputs.result }}
+          ###### End of Repository/Build Configurations ######
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SALMON_HILL_0B1C45200 }}
+          action: "close"

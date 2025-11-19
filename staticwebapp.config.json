@@ -1,0 +1,15 @@
+{
+  "routes": [
+    { "route": "/", "allowedRoles": ["anonymous"] },
+    { "route": "/report.html", "allowedRoles": ["anonymous"] },
+    { "route": "/assets/*", "allowedRoles": ["anonymous"] }
+  ],
+  "mimeTypes": {
+    ".js": "application/javascript",
+    ".json": "application/json"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/*", "/report.html"]
+  }
+}
