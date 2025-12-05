@@ -26,7 +26,7 @@ const Navigation = () => {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        <h1 className="nav-title">Power BI Reports</h1>
+        <h1 className="nav-title">My Reports</h1>
         <ul className="nav-menu">
           <li>
             <Link to="/" className={`nav-btn ${isActive('/') ? 'active' : ''}`}>

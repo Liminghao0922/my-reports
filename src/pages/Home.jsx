@@ -5,15 +5,14 @@ const Home = () => {
   return (
     <div className="container">
       <div className="hero-section">
-        <h2>Welcome to Operations Analytics</h2>
+        <h2>Welcome to PowerBI Report</h2>
         <p>Access your operations intelligence dashboard with MSAL.js authentication.</p>
         
         <div className="card-grid">
           <div className="card">
-            <h3>📊 Operations Analytics</h3>
+            <h3>📊 Power BI Reports</h3>
             <p>
-              View comprehensive operations metrics, performance indicators, and business 
-              insights in an interactive dashboard.
+              Interactive business intelligence dashboards powered by Power BI.
             </p>
             <Link to="/powerbi" className="btn btn-primary">
               View Dashboard
