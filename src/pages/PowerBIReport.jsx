@@ -17,7 +17,7 @@ const PowerBIReport = () => {
 
   const embedReport = async (accessToken, report) => {
     try {
-      // Initialize powerbi service if not already done
+      // Initialize PowerBI service if not already done
       if (!powerbiRef.current) {
         powerbiRef.current = new pbi.service.Service(
           pbi.factories.hpmFactory,
@@ -123,7 +123,7 @@ const PowerBIReport = () => {
     if (!token) return;
 
     try {
-      // 获取用户的所有工作区
+      // Fetch all workspaces the user has access to
       const workspacesResponse = await fetch('https://api.powerbi.com/v1.0/myorg/groups', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -137,7 +137,7 @@ const PowerBIReport = () => {
       const workspacesData = await workspacesResponse.json();
       const allReports = [];
 
-      // 从每个工作区获取报表
+      // Fetch reports from each workspace
       for (const workspace of workspacesData.value) {
         try {
           const reportsResponse = await fetch(
