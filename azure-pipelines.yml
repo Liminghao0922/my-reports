@@ -1,0 +1,61 @@
+# Azure DevOps Pipeline for Azure Static Web Apps CI/CD
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: PowerBI-Secrets
+  - name: nodeVersion
+    value: '18.x'
+
+stages:
+  - stage: BuildAndDeploy
+    displayName: 'Build and Deploy'
+    jobs:
+      - job: Build
+        displayName: 'Build and Deploy Job'
+        steps:
+          # Checkout code
+          - checkout: self
+            submodules: true
+          
+          # Set up Node.js
+          - task: NodeTool@0
+            displayName: 'Set up Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+          
+          # Install dependencies
+          - script: npm ci
+            displayName: 'Install dependencies'
+          
+          # Build React app
+          - script: npm run build
+            displayName: 'Build React app'
+            env:
+              VITE_POWERBI_CLIENT_ID: $(POWERBI_CLIENT_ID)
+              VITE_POWERBI_TENANT_ID: $(POWERBI_TENANT_ID)
+              VITE_POWERBI_WORKSPACE_ID: $(POWERBI_WORKSPACE_ID)
+              VITE_POWERBI_REPORT_ID: $(POWERBI_REPORT_ID)
+              VITE_POWERBI_REPORT_NAME: $(POWERBI_REPORT_NAME)
+              VITE_LOOKER_EMBED_URL: $(LOOKER_EMBED_URL)
+              VITE_LOOKER_DASHBOARD_ID: $(LOOKER_DASHBOARD_ID)
+              VITE_LOOKER_AUTH_METHOD: $(LOOKER_AUTH_METHOD)
+          
+          # Deploy to Azure Static Web Apps
+          - task: AzureStaticWebApp@0
+            displayName: 'Deploy to Azure Static Web Apps'
+            inputs:
+              app_location: 'dist'
+              skip_app_build: true
+              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
