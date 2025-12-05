@@ -28,7 +28,7 @@
 | フェーズ | 所要時間 | 内容 |
 |---------|---------|------|
 | **事前準備** | 1.5-2.5時間 | ソフトウェアインストール、アカウント準備、リポジトリクローン |
-| **Hands-on 当日** | 1-1.5時間 | Azure AD 設定、認証理解、ローカル実行、Azure デプロイ、GitHub CI/CD |
+| **Hands-on 当日** | 1-1.5時間 | Azure AD 設定、認証理解、ローカル実行、Azure デプロイ、Azure DevOps CI/CD |
 
 ---
 
@@ -48,7 +48,7 @@
   - **管理者権限あり**（重要！）
 - [ ] **安定したインターネット接続**
   - Wi-Fi または有線 LAN
-  - 企業ネットワークの場合、npm/GitHub/Azure へのアクセス可能か IT 部門に確認
+  - 企業ネットワークの場合、npm/Azure DevOps/Azure へのアクセス可能か IT 部門に確認
 
 **推奨:**
 - [ ] マウス（作業効率向上）
@@ -191,7 +191,7 @@ VS Code を起動 → 拡張機能アイコン（左サイドバー）→ 以下
 
 - [ ] Azure AD アプリ登録の作成権限があるか
 - [ ] API アクセス許可の付与権限があるか
-- [ ] 外部サービス（Power BI、GitHub、Azure）へのアクセスが許可されているか
+- [ ] 外部サービス（Power BI、Azure DevOps、Azure）へのアクセスが許可されているか
 
 **❌ 権限がない場合:**
 - 講師が用意したサンプルアカウントを使用
@@ -245,15 +245,22 @@ VS Code を起動 → 拡張機能アイコン（左サイドバー）→ 以下
 
 ---
 
-### 2.4 GitHub アカウントの作成（5-10分）
+### 2.4 Azure DevOps アカウントの作成（5-10分）
 
 **デプロイ体験をする場合のみ必須**
 
-- [ ] https://github.com/ で無料アカウント作成
+- [ ] https://dev.azure.com/ で無料アカウント作成
 - [ ] メールアドレス認証を完了
-- [ ] ユーザー名を決定（後から変更不可）
+- [ ] Organization を作成
+- [ ] Project を新規作成
 
-**認証方法の選択:**
+**Azure DevOps の基本構造:**
+- Organization: 組織単位のコンテナ
+- Project: リポジトリ・パイプライン・ボードなどを管理
+- Repos: Git リポジトリ管理
+- Pipelines: CI/CD の自動化
+
+**Git 認証方法の選択:**
 
 **オプション A: HTTPS 認証（簡単・推奨）**
 ```bash
@@ -262,13 +269,11 @@ git credential-manager --version
 ```
 → 初回 push 時にブラウザで認証
 
-**オプション B: SSH 鍵認証（上級者向け）**
+**オプション B: Personal Access Token (PAT)（上級者向け）**
 ```bash
-# SSH 鍵を生成
-ssh-keygen -t ed25519 -C "your.email@example.com"
-
-# 公開鍵を GitHub に追加
-# https://github.com/settings/keys
+# Azure DevOps で PAT を生成
+# https://dev.azure.com/<org>/_usersSettings/tokens
+# これを使用して Git operations を実行
 ```
 
 ---
@@ -285,7 +290,9 @@ mkdir C:\handson
 cd C:\handson
 
 # 2. リポジトリをクローン
-git clone https://github.com/Liminghao0922/my-reports.git
+# Azure DevOps Repos から取得
+# Project Settings > Repos > Clone から URL をコピー
+git clone https://dev.azure.com/<org>/<project>/_git/my-reports
 
 # 3. ディレクトリに移動
 cd .\my-reports\
@@ -329,8 +336,6 @@ VITE_POWERBI_TENANT_ID=
 
 # Power BI（事前に取得済み）
 VITE_POWERBI_WORKSPACE_ID=
-VITE_POWERBI_REPORT_ID=
-VITE_POWERBI_REPORT_NAME=
 ```
 
 ---
@@ -381,7 +386,7 @@ rm -r test-app
 ✅ Azure Subscription あり
 ✅ Azure AD アカウントでログイン可能
 ✅ Power BI アカウント・Pro ライセンスあり
-✅ GitHub アカウント作成済み
+✅ Azure DevOps アカウント・Organization・Project 作成済み
 ✅ 必要な情報をメモ済み（Workspace ID、Report ID）
 ✅ インターネット接続確認済み
 ```
@@ -402,7 +407,7 @@ rm -r test-app
   □ Azure AD アカウント情報（メール・パスワード）
   □ Power BI Workspace ID
   □ Power BI Report ID
-  □ GitHub アカウント情報（デプロイする場合）
+  □ Azure DevOps Organization 情報（デプロイする場合）
   ```
 
 ---
@@ -423,7 +428,7 @@ rm -r test-app
 | **35-40分** | 環境変数設定 | .env ファイル編集 | Client ID、Tenant ID、Report ID 入力 |
 | **40-45分** | ローカル実行 | npm run dev | http://localhost:5173 で動作確認 |
 | **45-55分** | Azure Static Web Apps | リソース作成 | Deployment Token 取得 |
-| **55-70分** | GitHub デプロイ | リポジトリ作成・自動デプロイ | Secrets 設定、コード push、CI/CD 確認 |
+| **55-70分** | Azure DevOps デプロイ | リポジトリ作成・自動デプロイ | パイプライン作成、コード push、CI/CD 確認 |
 | **70-75分** | デプロイ結果確認 | 本番 URL アクセス | 動作確認、環境変数設定 |
 | **75-90分** | Q&A・まとめ | 質疑応答 | 次のステップ、認定証授与 |
 
@@ -538,8 +543,6 @@ VITE_POWERBI_TENANT_ID=<先ほどコピーした Tenant ID>
 
 # Power BI
 VITE_POWERBI_WORKSPACE_ID=<事前準備で取得した Workspace ID>
-VITE_POWERBI_REPORT_ID=<事前準備で取得した Report ID>
-VITE_POWERBI_REPORT_NAME=My Power BI Report
 ```
 
 **保存して閉じる**
@@ -587,12 +590,12 @@ npm run dev
    リージョン: East Asia
    
    デプロイの詳細:
-   ソース: GitHub
+   ソース: Azure DevOps
    ```
 
-4. **「GitHub でサインイン」をクリック**
-   - GitHub アカウントで認証
-   - **後でリポジトリを選択するため、まだ何も選択しない**
+4. **「Azure DevOps でサインイン」をクリック**
+   - Azure DevOps アカウントで認証
+   - Organization とリポジトリを選択
 
 5. **「確認と作成」→「作成」をクリック**
 
@@ -609,46 +612,85 @@ npm run dev
 
 ---
 
-### Session 5: GitHub リポジトリ作成とデプロイ（15分）
+### Session 5: Azure DevOps リポジトリ作成とデプロイ（15分）
 
-#### 5.1 GitHub リポジトリの作成（5分）
+#### 5.1 Azure DevOps Git リポジトリの作成（5分）
 
-1. **GitHub にアクセス**
-   - https://github.com にログイン
+1. **Azure DevOps にアクセス**
+   - https://dev.azure.com にログイン
+   - Organization を選択
+   - Project を選択
 
-2. **新規リポジトリ作成**
-   - 右上の「+」→ 「New repository」
-   - Repository name: `powerbi-report-site`
-   - Description: `Power BI Report Hosting Site`
-   - **Private** を選択（推奨）
-   - **「Create repository」** をクリック
+2. **Repos セクションで新規リポジトリを初期化**
+   - 左メニュー → 「Repos」
+   - 「Files」を選択
+   - リポジトリが自動作成されている場合と、新規作成が必要な場合がある
+   - **リポジトリ名**: `my-reports`（またはプロジェクト名に準じる）
 
 ---
 
-#### 5.2 GitHub Secrets の設定（3分）
+#### 5.2 Azure DevOps Pipeline の作成（3分）
 
-1. 作成したリポジトリページで **「Settings」** タブをクリック
-2. 左メニュー → 「Secrets and variables」→ 「**Actions**」
-3. **「New repository secret」** をクリック
+1. 左メニュー → 「Pipelines」をクリック
+2. **「New pipeline」** をクリック
+3. **「Azure Repos Git」** を選択
+4. リポジトリを選択
+5. テンプレートから **「Node.js」** を選択
+6. パイプラインが自動生成される
 
-4. **Secret を追加:**
+**パイプラインに以下の設定を追加:**
+```yaml
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: npm install
+  displayName: 'npm install'
+
+- script: npm run build
+  displayName: 'npm build'
+
+- task: AzureStaticWebApp@0
+  inputs:
+    azure_static_web_apps_api_token: $(deployment_token)
+    app_location: '/'
+    app_artifact_location: 'dist'
+  displayName: 'Deploy to Azure Static Web Apps'
+```
+
+---
+
+#### 5.3 Pipeline Variables の設定（2分）
+
+1. Pipeline エディタで **「Variables」** をクリック
+2. **「New variable」** をクリック
+3. **Variable を追加:**
    ```
-   Name: AZURE_STATIC_WEB_APPS_API_TOKEN
+   Name: deployment_token
    Value: <先ほどコピーした Deployment Token>
+   Keep this value secret: ✓ チェック
    ```
-
-5. **「Add secret」** をクリック
+4. **「Save」** をクリック
 
 ---
 
-#### 5.3 ローカルコードを GitHub にプッシュ（7分）
+#### 5.4 ローカルコードを Azure DevOps にプッシュ（5分）
 
 ```powershell
 # 1. Git リポジトリを初期化（まだの場合）
 git init
 
 # 2. リモートリポジトリを追加
-git remote add origin https://github.com/<YourUsername>/powerbi-report-site.git
+# Azure DevOps > Repos > Clone から URL をコピー
+git remote add origin https://dev.azure.com/<Organization>/<Project>/_git/my-reports
 
 # 3. ブランチ名を main に変更
 git branch -M main
@@ -659,23 +701,23 @@ git add .
 # 5. コミット
 git commit -m "Initial commit: Power BI Report Site"
 
-# 6. GitHub にプッシュ
+# 6. Azure DevOps にプッシュ
 git push -u origin main
 ```
 
-**✅ コードが GitHub にアップロードされました！**
+**✅ コードが Azure DevOps にアップロードされました！**
 
 ---
 
-#### 5.4 GitHub Actions ワークフローの確認（3分）
+#### 5.5 Azure DevOps Pipeline の実行確認（3分）
 
-1. **GitHub リポジトリページ**に戻る
-2. **「Actions」** タブをクリック
-3. **自動的に開始されたワークフロー**を確認
+1. **Azure DevOps Project ページ**に戻る
+2. **「Pipelines」** → **「Pipelines」** をクリック
+3. **自動的に開始されたパイプライン**を確認
 
-**ワークフローの内容:**
+**パイプラインの内容:**
 - ✅ コードのチェックアウト
-- ✅ Node.js のセットアップ
+- ✅ Node.js v18 のセットアップ
 - ✅ 依存関係のインストール (`npm install`)
 - ✅ ビルド実行 (`npm run build`)
 - ✅ Azure Static Web Apps へのデプロイ
@@ -737,12 +779,6 @@ git push -u origin main
    
    名前: VITE_POWERBI_WORKSPACE_ID
    値: <Workspace ID>
-   
-   名前: VITE_POWERBI_REPORT_ID
-   値: <Report ID>
-   
-   名前: VITE_POWERBI_REPORT_NAME
-   値: My Power BI Report
    ```
 
 5. **「保存」** をクリック
@@ -753,7 +789,7 @@ git push -u origin main
 
 #### 6.5 最終確認
 
-1. **再デプロイ完了を待つ**（GitHub Actions で確認）
+1. **再デプロイ完了を待つ**（Azure DevOps Pipeline で確認）
 2. **本番 URL にアクセス**
 3. **完全動作確認:**
    - ✅ サインインボタンが表示される
@@ -773,7 +809,7 @@ git push -u origin main
 - ✅ MSAL.js による認証
 - ✅ Power BI Embedded の仕組み
 - ✅ Azure Static Web Apps へのデプロイ
-- ✅ GitHub Actions による CI/CD
+- ✅ Azure DevOps Pipeline による CI/CD
 
 ---
 
@@ -784,11 +820,11 @@ git push -u origin main
 **Q: 環境変数を変更したい場合は？**
 A: Azure Portal → Static Web Apps → 構成 から変更できます。変更後は自動的に再デプロイされます。
 
-**Q: GitHub リポジトリを Private から Public に変更できますか？**
-A: はい、可能です。Settings → Danger Zone → Change visibility から変更できます。
+**Q: Azure DevOps Repos を Public に変更できますか？**
+A: はい、可能です。Project Settings → Repositories → Repository settings から変更できます。
 
 **Q: デプロイに失敗した場合は？**
-A: GitHub Actions のログを確認してください。ビルドエラーの詳細が表示されます。
+A: Azure DevOps Pipeline のログを確認してください。ビルドエラーの詳細が表示されます。
 
 **Q: コストはかかりますか？**
 A: Azure Static Web Apps の Free プランは無料です。Power BI Pro ライセンスのみ月額約1,000円必要です。
@@ -804,7 +840,7 @@ A: Azure Static Web Apps の Free プランは無料です。Power BI Pro ライ
 | **Azure AD 認証** | シングルページアプリケーション（SPA）の認証実装 |
 | **Power BI Embedded** | User Owns Data モデルによるレポート埋め込み |
 | **Azure Static Web Apps** | 静的サイトホスティングとデプロイ |
-| **GitHub Actions** | CI/CD パイプラインの構築と自動デプロイ |
+| **Azure DevOps Pipeline** | CI/CD パイプラインの構築と自動デプロイ |
 | **本番環境デプロイ** | HTTPS 対応の本番サイトの公開 |
 
 ---
@@ -883,8 +919,8 @@ npm run dev -- --port 3001
 - **Power BI Embedded**: https://learn.microsoft.com/power-bi/developer/embedded/
 
 ### コミュニティ
-- **GitHub Discussions**: このリポジトリの Discussions タブ
-- **Stack Overflow**: タグ `powerbi-embedded`, `msal.js`, `react`
+- **Azure DevOps**: https://dev.azure.com
+- **Stack Overflow**: タグ `powerbi-embedded`, `msal.js`, `react`, `azure-devops`
 
 ### 次のステップ
 - [ ] カスタムテーマの作成
